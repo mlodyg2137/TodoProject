@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+exclude = '''
+/(
+  \.venv
+  |migrations
+  |build
+  |dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["migrations", ".venv", "build", "dist"]
+
+[tool.ruff.lint]
+# E,F (pycodestyle/pyflakes), I (imports), B (bugbear), UP (pyupgrade)
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
+
+fixable = ["ALL"]
+unfixable = []
