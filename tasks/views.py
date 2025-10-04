@@ -1,10 +1,12 @@
-from django.shortcuts import render
-from .serializers import TaskSerializer
-from .models import Task
-from rest_framework import viewsets, decorators, response, status
-from rest_framework.permissions import IsAuthenticated
-from common.permissions import IsProjectMember
 from django.db.models import Count
+from rest_framework import decorators, response, status, viewsets
+from rest_framework.permissions import IsAuthenticated
+
+from common.permissions import IsProjectMember
+
+from .models import Task
+from .serializers import TaskSerializer
+
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
@@ -14,11 +16,13 @@ class TaskViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "due_date", "title"]
 
     def get_queryset(self):
-        return Task.objects.filter(project__members=self.request.user) | Task.objects.filter(project__owner=self.request.user)
-    
+        return Task.objects.filter(project__members=self.request.user) | Task.objects.filter(
+            project__owner=self.request.user
+        )
+
     def perform_create(self, serializer):
         return serializer.save(owner=self.request.user)
-    
+
     @decorators.action(detail=False, methods=["get"], url_path="stats")
     def stats(self, request):
         qs = self.filter_queryset(self.get_queryset())

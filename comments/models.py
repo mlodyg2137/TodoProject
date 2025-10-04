@@ -1,5 +1,6 @@
-from django.db import models
 from django.conf import settings
+from django.db import models
+
 
 class Comment(models.Model):
     task = models.ForeignKey("tasks.Task", on_delete=models.CASCADE, related_name="comments")
