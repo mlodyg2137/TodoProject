@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "djoser",
+    "tasks",
+    "projects",
+    "comments",
 ]
 
 MIDDLEWARE = [
@@ -128,6 +132,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",  # or AllowAny on dev
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -135,4 +147,27 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "username",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "SEND_ACTIVATION_EMAIL": False,
+    "PERMISSIONS": {
+        # public:
+        "user_create": ["rest_framework.permissions.AllowAny"],  # POST /api/auth/users/
+        "password_reset": [
+            "rest_framework.permissions.AllowAny"
+        ],  # POST /api/auth/users/reset_password/
+        "password_reset_confirm": ["rest_framework.permissions.AllowAny"],
+        "username_reset": ["rest_framework.permissions.AllowAny"],
+        "username_reset_confirm": ["rest_framework.permissions.AllowAny"],
+        "activation": ["rest_framework.permissions.AllowAny"],
+        # authorize:
+        "user": ["rest_framework.permissions.IsAuthenticated"],  # /api/auth/users/{id}
+        "user_delete": ["rest_framework.permissions.IsAuthenticated"],
+        "user_me": ["rest_framework.permissions.IsAuthenticated"],  # GET /api/auth/users/me/
+        "set_password": ["rest_framework.permissions.IsAuthenticated"],
+        "set_username": ["rest_framework.permissions.IsAuthenticated"],
+    },
 }

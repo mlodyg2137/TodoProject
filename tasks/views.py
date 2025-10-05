@@ -9,6 +9,7 @@ from .serializers import TaskSerializer
 
 
 class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.none()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated, IsProjectMember]
     filterset_fields = ["status", "project", "due_date"]
