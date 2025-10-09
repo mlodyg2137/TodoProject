@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pl">
+<head><meta charset="utf-8"><title>Logowanie</title>
+  <style>
+    body { font-family: system-ui, Arial; margin: 40px; }
+    form { max-width: 360px; margin: auto; display:flex; flex-direction:column; gap:10px; }
+    input, button { padding:10px; border:1px solid #ddd; border-radius:6px; }
+    button { cursor:pointer; }
+    .err { color:#b00; margin-bottom:8px; }
+  </style>
+</head>
+<body>
+  <h1>Zaloguj się</h1>
+  {% if form.errors %}<div class="err">Nieprawidłowy login lub hasło.</div>{% endif %}
+
+  <form method="post" action="">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Nazwa użytkownika" required autofocus>
+    <input type="password" name="password" placeholder="Hasło" required>
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <button type="submit">Zaloguj</button>
+  </form>
+
+  <p style="margin-top:12px;">
+    Nie masz konta? <a href="{% url 'signup' %}">Zarejestruj się</a> albo stwórz superusera:
+    <code>python manage.py createsuperuser</code>
+  </p>
+</body>
+</html>

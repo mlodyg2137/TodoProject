@@ -1,0 +1,14 @@
+<table>
+  <thead>
+    <tr>
+      <th>ID</th><th>Tytuł</th><th>Projekt</th><th>Status</th><th>Akcje</th>
+    </tr>
+  </thead>
+  <tbody id="tasks-body">
+    {% for t in tasks %}
+      {% include "ui/_task_row.html" with t=t %}
+    {% empty %}
+      <tr><td colspan="5" style="padding:16px;color:#666;">Brak zadań.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>

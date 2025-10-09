@@ -36,6 +36,9 @@ router.register(r"comments", CommentViewSet, basename="comment")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include("ui.urls")),
+    path("accounts/", include("django.contrib.auth.urls")),  # /accounts/login
+    path("api/accounts/", include("accounts.urls")),  # /api/accounts/[register,signup,me]
     # Endpoints
     path("api/", include(router.urls)),
     # JWT, Djoser

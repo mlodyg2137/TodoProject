@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pl">
+<head><meta charset="utf-8"><title>Rejestracja</title>
+  <style>
+    body { font-family: system-ui, Arial; margin: 40px; }
+    form { max-width: 420px; margin:auto; display:flex; flex-direction:column; gap:10px; }
+    input, button { padding:10px; border:1px solid #ddd; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <h1>Rejestracja</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Utwórz konto</button>
+  </form>
+  <p>Masz już konto? <a href="{% url 'login' %}">Zaloguj się</a></p>
+</body>
+</html>

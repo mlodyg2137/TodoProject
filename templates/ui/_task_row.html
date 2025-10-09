@@ -1,0 +1,21 @@
+<tr id="task-{{ t.id }}" class="{% if t.status == 'done' %}done{% endif %}">
+  <td>{{ t.id }}</td>
+  <td>{{ t.title }}</td>
+  <td>{{ t.project.name }}</td>
+  <td>{{ t.status }}</td>
+  <td class="row">
+    <button class="btn ok"
+            hx-post="{% url 'ui:toggle_done' t.id %}"
+            hx-target="#task-{{ t.id }}"
+            hx-swap="outerHTML">
+      {% if t.status == 'done' %}Oznacz TODO{% else %}Oznacz DONE{% endif %}
+    </button>
+
+    <button class="btn danger"
+            hx-post="{% url 'ui:delete_task' t.id %}"
+            hx-target="#task-{{ t.id }}"
+            hx-swap="outerHTML:remove">
+      Usuń
+    </button>
+  </td>
+</tr>
