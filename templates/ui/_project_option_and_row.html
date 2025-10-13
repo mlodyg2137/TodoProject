@@ -1,0 +1,17 @@
+ <!-- 1) Komunikat OOB do #msg  -->
+<div id="msg" hx-swap-oob="innerHTML">
+  Utworzono projekt „{{ p.name }}”.
+</div>
+
+ <!-- 2) Dopnij TR do istniejącego tbody #projects-body -->
+<tbody id="projects-body" hx-swap-oob="beforeend">
+  {% include "ui/_project_row.html" with p=p %}
+</tbody>
+
+ <!-- 3) (opcjonalnie) dopnij do selectów, jeśli je masz -->
+<select id="project-select" hx-swap-oob="beforeend">
+  <option value="{{ p.id }}">{{ p.name }}</option>
+</select>
+<select id="filter-project" hx-swap-oob="beforeend">
+  <option value="{{ p.id }}">{{ p.name }}</option>
+</select>

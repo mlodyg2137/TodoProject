@@ -1,0 +1,24 @@
+<td id="project-{{ p.id }}-members" {% if oob %}hx-swap-oob="outerHTML"{% endif %}>
+  <ul style="margin:0; padding-left:18px;">
+    <li><strong>{{ p.owner.username }}</strong></li>
+    {% for m in p.members.all %}
+      {% if m.id != p.owner_id %}
+        <li style="display:flex; align-items:center; gap:6px;">
+          <span>{{ m.username }}</span>
+          {% if request.user.id == p.owner_id %}
+            <!-- mini-form na usuwanie (też wariant B: POST + OOB) -->
+            <form
+              hx-post="{% url 'ui:project_remove_member' p.id %}"
+              hx-swap="none"
+              style="display:inline">
+              {% csrf_token %}
+              <input type="hidden" name="username" value="{{ m.username }}">
+              <button class="btn danger" title="Usuń"
+                      hx-confirm="Usunąć {{ m.username }}?">×</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</td>

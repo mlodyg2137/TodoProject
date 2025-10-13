@@ -22,8 +22,9 @@
 </head>
 <body>
 <header>
-  <h1>ToDo – Panel</h1>
+  <h1>ToDo - Panel</h1>
   <div class="row">
+    Witaj,<b>{{ user.username }}</b>
     <form action="/accounts/logout/" method="post">
       {% csrf_token %}
       <button class="btn">Wyloguj</button>
@@ -31,7 +32,15 @@
   </div>
 </header>
 
+<!-- KOMUNIKAT Z DODANIEM UZYTKOWNIKA -->
+<div id="msg" style="margin:8px 0; padding:8px; border-radius:6px; border:1px solid #ddd;"></div>
+
+
 {% block content %}{% endblock %}
 
+<script>
+  function getCookie(name){const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');return m?m.pop():'';}
+  document.body.addEventListener('htmx:configRequest', (e)=>{ e.detail.headers['X-CSRFToken']=getCookie('csrftoken'); });
+</script>
 </body>
 </html>

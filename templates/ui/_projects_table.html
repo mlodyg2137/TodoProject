@@ -1,0 +1,14 @@
+<table>
+  <thead>
+    <tr>
+      <th>ID</th><th>Nazwa</th><th>Owner</th><th>Członkowie</th><th>Akcje</th>
+    </tr>
+  </thead>
+  <tbody id="projects-body">
+    {% for p in projects %}
+      {% include "ui/_project_row.html" with p=p %}
+    {% empty %}
+      <tr><td colspan="4" style="padding:16px;color:#666;">Brak projektów.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>

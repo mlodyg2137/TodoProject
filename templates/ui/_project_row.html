@@ -1,0 +1,32 @@
+<tr id="project-{{ p.id }}">
+  <td>{{ p.id }}</td>
+  <td>{{ p.name }}</td>
+  <td>{{ p.owner.username }}</td>
+
+  {% include "ui/_project_members_cell.html" with p=p %}
+
+  <td>
+    <!-- Pole do wpisania username oraz przycisk Dodaj, ktory to doda uzytkownika do projektu -->
+    {% if request.user.id == p.owner_id %}
+      <form hx-post="{% url 'ui:project_add_member' p.id %}"
+            hx-target="this"
+            hx-swap="none"
+            style="display:inline; margin-right:8px;">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Nazwa użytkownika" required
+               style="padding:4px 8px; font-size:14px; border:1px solid #ccc; border-radius:4px;">
+        <button class="btn" type="submit">Dodaj</button>
+      </form>
+    {% endif %}
+    {% if request.user.id == p.owner_id %}
+      <button class="btn danger"
+              hx-post="{% url 'ui:project_delete' p.id %}"
+              hx-target="#project-{{ p.id }}"
+              hx-swap="outerHTML:remove"
+              hx-confirm="Na pewno usunąć projekt „{{ p.name }}”?">
+        Usuń projekt
+      </button>
+    {% endif %}
+  </td>
+  
+</tr>

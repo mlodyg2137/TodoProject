@@ -1,23 +1,44 @@
 {% extends "ui/base.html" %}
-{% load static %}
 
 {% block content %}
 
-<!-- Formularz tworzenia -->
+<h2>Projekty</h2>
+
+<!-- Tworzenie projektu -->
+<form class="row"
+      hx-post="{% url 'ui:project_create' %}"
+      hx-target="this"
+      hx-swap="none">
+  {% csrf_token %}
+  <input type="text" name="name" placeholder="Nazwa projektu" required>
+  <button class="btn ok" type="submit">Utwórz projekt</button>
+</form>
+
+<!-- Szkielet tabeli -->
+
+<div id="projects-table" hx-get="{% url 'ui:projects_table' %}" hx-trigger="load"></div>
+
+<!-- Formularz tworzenia taska -->
+<h2>Zadania</h2>
 <form class="row" hx-post="{% url 'ui:create_task' %}" hx-target="#tasks-body" hx-swap="afterbegin">
   {% csrf_token %}
   <input type="text" name="title" placeholder="Nowy task..." required />
-  <select name="project" required>
+
+  <!-- wybór projektu -->
+  <select name="project" id="project-select" required>
     <option value="">-- projekt --</option>
     {% for p in projects %}
       <option value="{{ p.id }}">{{ p.name }}</option>
     {% endfor %}
   </select>
+
+  <!-- status z ładnymi labelami z Enuma -->
   <select name="status">
-    <option value="todo">todo</option>
-    <option value="inprogress">inprogress</option>
-    <option value="done">done</option>
+    {% for value, label in status_choices %}
+      <option value="{{ value }}">{{ label }}</option>
+    {% endfor %}
   </select>
+
   <button class="btn ok" type="submit">Dodaj</button>
 </form>
 
@@ -32,24 +53,15 @@
 
   <select id="filter-status" hx-get="{% url 'ui:tasks_table' %}" hx-target="#tasks-table" hx-include="#filter-project,#filter-status">
     <option value="">wszystkie statusy</option>
-    <option value="todo">todo</option>
-    <option value="inprogress">inprogress</option>
-    <option value="done">done</option>
+    {% for value, label in status_choices %}
+      <option value="{{ value }}">{{ label }}</option>
+    {% endfor %}
   </select>
 
   <button class="btn" hx-get="{% url 'ui:tasks_table' %}" hx-target="#tasks-table">Odśwież</button>
 </div>
 
-<!-- Tabela -->
-<div id="tasks-table" hx-get="{% url 'ui:tasks_table' %}" hx-trigger="load">
-  <!-- tu wejdzie partial z wierszami -->
-</div>
-
-<script>
-  document.body.addEventListener('htmx:configRequest', (e) => {
-    const csrftoken = '{{ csrf_token }}';  // token z renderu
-    if (csrftoken) e.detail.headers['X-CSRFToken'] = csrftoken;
-  });
-</script>
+<!-- Tabela zadań -->
+<div id="tasks-table" hx-get="{% url 'ui:tasks_table' %}" hx-trigger="load"></div>
 
 {% endblock %}
