@@ -1,4 +1,10 @@
-{% include "ui/_project_members_cell.html" with p=p oob=True %}
+<table>
+  <tbody>
+    <tr>
+      {% include "ui/_project_members_cell.html" with p=p oob=True %}
+    </tr>
+  </tbody>
+</table>
 
 <div id="msg" hx-swap-oob="innerHTML">
   {{ message }}

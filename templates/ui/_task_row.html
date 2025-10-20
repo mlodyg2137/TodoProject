@@ -5,21 +5,13 @@
   <td>{{ t.get_status_display }}</td>
 
   <td class="row">
-    <button class="btn ok"
-        hx-patch="{% url 'ui:toggle_done' t.id %}"
-        hx-target="#task-{{ t.id }}"
-        hx-swap="outerHTML"
-        style="display:inline"
-        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <button class="btn ok" hx-patch="{% url 'ui:toggle_done' t.id %}" hx-target="#task-{{ t.id }}" hx-swap="outerHTML"
+      style="display:inline" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
       {% if t.status == 'done' %}Oznacz TODO{% else %}Oznacz DONE{% endif %}
     </button>
 
-    <button class="btn danger"
-        hx-delete="{% url 'ui:delete_task' t.id %}"
-        hx-target="#task-{{ t.id }}"
-        hx-swap="outerHTML:remove"
-        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-        hx-confirm="Na pewno usunąć?">
+    <button class="btn danger" hx-delete="{% url 'ui:delete_task' t.id %}" hx-target="#task-{{ t.id }}"
+      hx-swap="outerHTML:remove" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-confirm="Na pewno usunąć?">
       Usuń
     </button>
   </td>

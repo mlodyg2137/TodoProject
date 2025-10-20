@@ -17,7 +17,7 @@ def test_register_creates_user(api_client):
 @pytest.mark.django_db
 def test_me_requires_auth(api_client):
     r = api_client.get("/api/auth/users/me/")
-    assert r.status_code == 401  # Unauthorized
+    assert r.status_code == 401
 
 
 @pytest.mark.django_db

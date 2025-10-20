@@ -5,18 +5,14 @@
 <h2>Projekty</h2>
 
 <!-- Tworzenie projektu -->
-<form class="row"
-      hx-post="{% url 'ui:project_create' %}"
-      hx-target="this"
-      hx-swap="none">
+<form class="row" hx-post="{% url 'ui:project_create' %}" hx-target="this" hx-swap="none">
   {% csrf_token %}
   <input type="text" name="name" placeholder="Nazwa projektu" required>
   <button class="btn ok" type="submit">Utwórz projekt</button>
 </form>
 
 <!-- Szkielet tabeli -->
-
-<div id="projects-table" hx-get="{% url 'ui:projects_table' %}" hx-trigger="load"></div>
+<div hx-get="{% url 'ui:projects_table' %}" hx-trigger="load"></div>
 
 <!-- Formularz tworzenia taska -->
 <h2>Zadania</h2>
@@ -28,14 +24,14 @@
   <select name="project" id="project-select" required>
     <option value="">-- projekt --</option>
     {% for p in projects %}
-      <option value="{{ p.id }}">{{ p.name }}</option>
+    <option value="{{ p.id }}">{{ p.name }}</option>
     {% endfor %}
   </select>
 
   <!-- status z ładnymi labelami z Enuma -->
   <select name="status">
     {% for value, label in status_choices %}
-      <option value="{{ value }}">{{ label }}</option>
+    <option value="{{ value }}">{{ label }}</option>
     {% endfor %}
   </select>
 
@@ -44,17 +40,19 @@
 
 <!-- Filtry -->
 <div class="row" style="margin-top:12px;">
-  <select id="filter-project" hx-get="{% url 'ui:tasks_table' %}" hx-target="#tasks-table" hx-include="#filter-project,#filter-status">
+  <select id="filter-project" hx-get="{% url 'ui:tasks_table' %}" hx-target="#tasks-table"
+    hx-include="#filter-project,#filter-status">
     <option value="">wszystkie projekty</option>
     {% for p in projects %}
-      <option value="{{ p.id }}">{{ p.name }}</option>
+    <option value="{{ p.id }}">{{ p.name }}</option>
     {% endfor %}
   </select>
 
-  <select id="filter-status" hx-get="{% url 'ui:tasks_table' %}" hx-target="#tasks-table" hx-include="#filter-project,#filter-status">
+  <select id="filter-status" hx-get="{% url 'ui:tasks_table' %}" hx-target="#tasks-table"
+    hx-include="#filter-project,#filter-status">
     <option value="">wszystkie statusy</option>
     {% for value, label in status_choices %}
-      <option value="{{ value }}">{{ label }}</option>
+    <option value="{{ value }}">{{ label }}</option>
     {% endfor %}
   </select>
 

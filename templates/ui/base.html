@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pl">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,40 +8,99 @@
   <!-- htmx -->
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
   <style>
-    body { font-family: system-ui, Arial; margin: 24px; }
-    header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
-    table { width:100%; border-collapse: collapse; }
-    th, td { padding:8px 10px; border-bottom: 1px solid #eee; }
-    tr.done td { color:#6a6a6a; text-decoration: line-through; }
-    .row { display:flex; gap:8px; align-items:center; }
-    .btn { padding:6px 10px; border:1px solid #ddd; background:#fafafa; cursor:pointer; border-radius:6px; }
-    .btn:not(:disabled):hover { background:#f0f0f0; }
-    .danger { border-color:#e66; }
-    .ok { border-color:#6a6; }
-    select, input[type=text] { padding:6px 10px; border:1px solid #ddd; border-radius:6px; }
+    body {
+      font-family: system-ui, Arial;
+      margin: 24px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr.done td {
+      color: #6a6a6a;
+      text-decoration: line-through;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      background: #fafafa;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .btn:not(:disabled):hover {
+      background: #f0f0f0;
+    }
+
+    .danger {
+      border-color: #e66;
+    }
+
+    .ok {
+      border-color: #6a6;
+    }
+
+    select,
+    input[type=text] {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
   </style>
 </head>
+
 <body>
-<header>
-  <h1>ToDo - Panel</h1>
-  <div class="row">
-    Witaj,<b>{{ user.username }}</b>
-    <form action="/accounts/logout/" method="post">
-      {% csrf_token %}
-      <button class="btn">Wyloguj</button>
-    </form>
-  </div>
-</header>
+  <header>
+    <h1>ToDo - Panel</h1>
+    <div class="row">
+      Witaj,<b>{{ user.username }}</b>
+      <form action="/accounts/logout/" method="post">
+        {% csrf_token %}
+        <button class="btn">Wyloguj</button>
+      </form>
+    </div>
+  </header>
 
-<!-- KOMUNIKAT Z DODANIEM UZYTKOWNIKA -->
-<div id="msg" style="margin:8px 0; padding:8px; border-radius:6px; border:1px solid #ddd;"></div>
+  <!-- KOMUNIKAT Z DODANIEM UZYTKOWNIKA -->
+  <div id="msg" style="margin:8px 0; padding:8px; border-radius:6px; border:1px solid #ddd;"></div>
 
 
-{% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 
-<script>
-  function getCookie(name){const m=document.cookie.match('(^|;)\\s*'+name+'\\s*=\\s*([^;]+)');return m?m.pop():'';}
-  document.body.addEventListener('htmx:configRequest', (e)=>{ e.detail.headers['X-CSRFToken']=getCookie('csrftoken'); });
-</script>
+  <script>
+    function getCookie(name) { const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)'); return m ? m.pop() : ''; }
+    document.body.addEventListener('htmx:configRequest', (e) => { e.detail.headers['X-CSRFToken'] = getCookie('csrftoken'); });
+
+    // DEBUGGING HTMX (uncomment to enable)
+    /*if (window.htmx) {
+      htmx.logAll(); // <- mega pomocne
+      htmx.config.logger = function (elt, name, detail) {
+        console.log("[htmx]", name, { elt, detail });
+      };
+    }*/
+  </script>
 </body>
+
 </html>

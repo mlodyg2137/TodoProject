@@ -1,26 +1,30 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseForbidden, QueryDict, JsonResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, render
 
 from projects.models import Project
 from tasks.models import Task
 
+
 @login_required
 def tasks_page(request):
     projects = Project.objects.filter(Q(owner=request.user) | Q(members=request.user)).distinct()
     status_choices = Task.Status.choices
-    return render(request, "ui/tasks.html", {"projects": projects, "status_choices": status_choices})
+    return render(
+        request, "ui/tasks.html", {"projects": projects, "status_choices": status_choices}
+    )
 
 
 @login_required
 def tasks_table(request):
-    qs = (Task.objects
-          .select_related("project", "owner")
-          .prefetch_related("project__members")
-          .filter(Q(project__owner=request.user) | Q(project__members=request.user))
-          .distinct())
+    qs = (
+        Task.objects.select_related("project", "owner")
+        .prefetch_related("project__members")
+        .filter(Q(project__owner=request.user) | Q(project__members=request.user))
+        .distinct()
+    )
 
     status = request.GET.get("status")
     proj = request.GET.get("project")
@@ -64,8 +68,6 @@ def toggle_done(request, pk: int):
         .distinct(),
         pk=pk,
     )
-    if task.project.owner_id != request.user.id:
-        return HttpResponseForbidden("Only owner can modify task.")
 
     task.status = Task.Status.DONE if task.status != Task.Status.DONE else Task.Status.TODO
     task.save(update_fields=["status", "completed_at", "updated_at"])
@@ -92,11 +94,12 @@ def delete_task(request, pk: int):
 
 @login_required
 def projects_table(request):
-    qs = (Project.objects
-          .prefetch_related("members")
-          .filter(Q(owner=request.user) | Q(members=request.user))
-          .distinct()
-          .order_by("id"))
+    qs = (
+        Project.objects.prefetch_related("members")
+        .filter(Q(owner=request.user) | Q(members=request.user))
+        .distinct()
+        .order_by("id")
+    )
     return render(request, "ui/_projects_table.html", {"projects": qs})
 
 
@@ -117,15 +120,13 @@ def project_create(request):
 
 User = get_user_model()
 
+
 @login_required
 def project_add_member(request, pk: int):
     if request.method != "POST":
         return HttpResponse(status=405)
 
-    project = get_object_or_404(
-        Project.objects.prefetch_related("members", "owner"),
-        pk=pk
-    )
+    project = get_object_or_404(Project.objects.prefetch_related("members", "owner"), pk=pk)
 
     if project.owner_id != request.user.id:
         return HttpResponseForbidden("Only owner can manage members.")
@@ -137,11 +138,19 @@ def project_add_member(request, pk: int):
     try:
         u = User.objects.get(username=username)
     except User.DoesNotExist:
-        return render(request, "ui/_project_members_oob.html", {"p": project, "message": f"Użytkownik \'{username}\' nie istnieje."})
+        return render(
+            request,
+            "ui/_project_members_oob.html",
+            {"p": project, "message": f"Użytkownik '{username}' nie istnieje."},
+        )
 
     project.members.add(u)
 
-    return render(request, "ui/_project_members_oob.html", {"p": project, "message": f"Dodano {u.username} do projektu \"{project.name}\"."})
+    return render(
+        request,
+        "ui/_project_members_oob.html",
+        {"p": project, "message": f'Dodano {u.username} do projektu "{project.name}".'},
+    )
 
 
 @login_required
@@ -155,28 +164,46 @@ def project_remove_member(request, pk: int):
 
     username = (request.POST.get("username") or "").strip()
     if not username:
-        return render(request, "ui/_project_members_oob.html", {"p": project, "message": "Podaj username."})
+        return render(
+            request, "ui/_project_members_oob.html", {"p": project, "message": "Podaj username."}
+        )
 
     if username == project.owner.username:
-        return render(request, "ui/_project_members_oob.html", {"p": project, "message": "Nie można usunąć właściciela projektu."})
+        return render(
+            request,
+            "ui/_project_members_oob.html",
+            {"p": project, "message": "Nie można usunąć właściciela projektu."},
+        )
 
     try:
         u = User.objects.get(username=username)
     except User.DoesNotExist:
-        return render(request, "ui/_project_members_oob.html", {"p": project, "message": f"Użytkownik '{username}' nie istnieje."})
+        return render(
+            request,
+            "ui/_project_members_oob.html",
+            {"p": project, "message": f"Użytkownik '{username}' nie istnieje."},
+        )
 
     if not project.members.filter(pk=u.pk).exists():
-        return render(request, "ui/_project_members_oob.html", {"p": project, "message": f"Użytkownik '{u.username}' nie jest członkiem."})
+        return render(
+            request,
+            "ui/_project_members_oob.html",
+            {"p": project, "message": f"Użytkownik '{u.username}' nie jest członkiem."},
+        )
 
     project.members.remove(u)
-    return render(request, "ui/_project_members_oob.html", {"p": project, "message": f"Usunięto {u.username} z projektu „{project.name}”."})
+    return render(
+        request,
+        "ui/_project_members_oob.html",
+        {"p": project, "message": f"Usunięto {u.username} z projektu „{project.name}”."},
+    )
 
 
 @login_required
 def project_delete(request, pk: int):
     if request.method != "POST":
         return HttpResponse(status=405)
-    project = get_object_or_404(Project.objects.prefetch_related("members","owner"), pk=pk)
+    project = get_object_or_404(Project.objects.prefetch_related("members", "owner"), pk=pk)
     if project.owner_id != request.user.id:
         return HttpResponseForbidden("Only owner can delete project.")
 
@@ -185,4 +212,3 @@ def project_delete(request, pk: int):
     project.delete()
 
     return render(request, "ui/_project_deleted_oob.html", {"row_id": row_id, "name": name})
-
